@@ -3,7 +3,10 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import WebSocket = require('ws');
+import fs = require('fs');
+import { watchFile } from 'fs';
 
+const authToken:string = "sdasdasdasdasdasdas";
 
 function editText(pos:vscode.Position, text:string) {
     vscode.window.activeTextEditor.edit(edit => {
@@ -64,6 +67,16 @@ function codeeMarkLine(line:number) {
 }
 
 
+function processCommand(command:string) {
+    command = command.replace(/[\s]{2,}/g, ' ');
+    console.log('processCommand:', command);
+    let posClassKeyWord = command.indexOf('Klasse');
+    if (posClassKeyWord > 0) {
+        let name = command.substring(posClassKeyWord + 7);
+        console.log('processCommand class', name.split(' ')[0], name);
+        createClass(name.split(' ')[0]);
+    }
+}
 
 
 // this method is called when your extension is activated
@@ -81,12 +94,10 @@ export function activate(context: vscode.ExtensionContext) {
         // The code you place here will be executed every time your command is executed
 
         // Display a message box to the user
-        vscode.window.showInformationMessage('Hello World 22!');
+        vscode.window.showInformationMessage('speCodee: Speech recognition started!');
         
-        // console.log('doc;', vscode.window.activeTextEditor.document.getText());
         // createMethod('Farbwechsel');
-        createClass('Regenbogen');
-
+        // createClass('Regenbogen');
     });
 
     
@@ -125,6 +136,18 @@ export function activate(context: vscode.ExtensionContext) {
         console.log(data);
     }); */
 
+    let speechFile = 'C:/users/x/desktop/speech.rec';
+    //
+
+    fs.watchFile(speechFile, {persistent:true, interval:300}, (curr:fs.Stats, prev:fs.Stats) => {
+        console.log('watchFile:', curr, prev);
+        let speech = fs.readFileSync(speechFile, {encoding:'utf-8'});
+        console.log('speech:', speech, speech.split("\r\n"));
+
+        speech.split("\r\n").forEach(element => {
+            processCommand(element);
+        });
+    })
     
 }
 
