@@ -11,14 +11,28 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.sayHello"
+        "onCommand:extension.sayHello",
+        "onCommand:extension.createMethod",
+        "onCommand:extension.codeeCreateAttribute2"
     ],
     "main": "./out/extension",
     "contributes": {
         "commands": [
             {
                 "command": "extension.sayHello",
-                "title": "Hello World"
+                "title": "Codee - Speech assistant"
+            },
+            {
+                "command": "extension.createMethod",
+                "title": "Codee - Speech assistant - create method"
+            },
+            {
+                "command": "extension.codeeCreateAttribute2",
+                "title": "Codee - Speech assistant - create attribute"
+            },
+            {
+                "command": "extension.codeeGotoLine",
+                "title": "Codee - Speech assistant - goto line"
             }
         ]
     },
@@ -35,5 +49,8 @@
         "tslint": "^5.8.0",
         "@types/node": "^7.0.43",
         "@types/mocha": "^2.2.42"
+    },
+    "dependencies": {
+        "ws": "^5.1.0"
     }
 }
