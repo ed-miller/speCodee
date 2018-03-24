@@ -123,21 +123,9 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(disposable);
 
 
-/*     let wsc = new WebSocket();
-
-    const ws = new WebSocket('ws://locahost:5030/', "aaa");
-
-
-    wsc.on('open', function open() {
-        wsc.send('something');
-    });
-       
-    wsc.on('message', function incoming(data) {
-        console.log(data);
-    }); */
 
     let speechFile = 'C:/users/x/desktop/speech.rec';
-    //
+
 
     fs.watchFile(speechFile, {persistent:true, interval:300}, (curr:fs.Stats, prev:fs.Stats) => {
         console.log('watchFile:', curr, prev);
