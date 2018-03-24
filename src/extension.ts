@@ -78,6 +78,51 @@ function processCommand(command:string) {
     }
 }
 
+/*
+ *
+ **/
+export function tranformClass(command:string) {
+    const inputString = command.toLocaleLowerCase();
+    let attributeMatch = /(vom[\s\S]*typ)[\s\S]*(string|nummer)/gmi.exec(inputString);
+
+    const of:string = (attributeMatch && attributeMatch.length >= 2)
+        ? attributeMatch[1].trim() : null;
+    const typeString:string = (attributeMatch && attributeMatch.length >= 2)
+        ? attributeMatch[1].trim() : null;
+    const type:string = (attributeMatch && attributeMatch.length >= 3)
+        ? attributeMatch[2].trim() : null;
+
+
+    //    (vom|[\s]*)[\s\S]*(typ|[\s]*)[\s\S]*(string|nummer|[\s]*)
+    let match = /(lösche|erstelle|erzeuge|markiere)[\s\S]*(klasse|methode|attribut|Zeile)[\s]*([\S]*)/gim.exec(inputString)
+    console.log('match', match)
+    const modifier:string = (match && match.length >= 1) ? match[1].trim() : null;
+    const reservedWord:string = (match && match.length >= 2) ? match[2].trim() : null;
+    const name:string = (match && match.length >= 3) ? match[3].trim() : null;
+    let result = {
+        modifier,
+        reservedWord,
+        name,
+        of,
+        typeString,
+        type
+    }
+
+    if (result.type !== null && result.of !== null) {
+        result.name = result.name.replace('vom', '')
+        result.name = result.name.replace('typ', '')
+    }
+    // transformResult
+    result.reservedWord === 'class' && result.modifier === 'erstelle'
+        && createClass(result.name);
+    result.reservedWord === 'method' && result.modifier === 'erstelle'
+        && createMethod(result.name);
+    result.reservedWord === 'attribute' && result.modifier === 'erstelle'
+        && result.type !== null
+        && createAttribute(result.name, result.type);
+    return result
+}
+
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
