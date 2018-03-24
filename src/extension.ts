@@ -5,6 +5,7 @@ import * as vscode from 'vscode';
 import WebSocket = require('ws');
 import fs = require('fs');
 import { watchFile } from 'fs';
+import procRunner = require('child_process');
 
 const authToken:string = "sdasdasdasdasdasdas";
 
@@ -66,6 +67,13 @@ function codeeMarkLine(line:number) {
     editor.selection = newSelection;
 }
 
+/*
+Erzeuge Klasse  Haus
+Erstelle Methode Zünden
+Erstelle Attribut Zylinderfassung
+Gehe zur zeile 77
+
+*/
 
 function processCommand(command:string) {
     command = command.replace(/[\s]{2,}/g, ' ');
@@ -135,7 +143,13 @@ export function activate(context: vscode.ExtensionContext) {
         speech.split("\r\n").forEach(element => {
             processCommand(element);
         });
-    })
+    });
+
+
+
+    const subprocess = procRunner.execFileSync('Speech.exe');
+    console.log('process:',subprocess);
+
     
 }
 
