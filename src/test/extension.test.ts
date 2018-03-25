@@ -5,7 +5,7 @@
 
 // The module 'assert' provides assertion methods from node
 import * as assert from 'assert';
-import {tranformClass, tranformMark} from "../extension";
+import {tranformReservedWord, tranformMark} from "../extension";
 
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
@@ -26,8 +26,8 @@ suite("Extension Tests", function () {
         let commands = [
             'Erstelle klasse Superbogen',
             'Erstelle klasseSuperbogen',
-            'LöscheklasseSuperbogen',
-            'Markiereklasse   Superbogen',
+            'EntferneklasseSuperbogen',
+            'Entferneklasse   Superbogen',
             'Erstelle     klasse   Superbogen',
             'Erstelle     methode   Superbogen',
             'Erstelle methode Superbogen',
@@ -41,10 +41,10 @@ suite("Extension Tests", function () {
             'Erzeugeattribut   Superbogenvomtypnummer',
         ];
         commands.forEach((command) => {
-            const result = tranformClass(command);
+            const result = tranformReservedWord(command);
             console.log('input: ' + command + ' - result', result);
 
-            assert.ok(result.modifier === "lösche"
+            assert.ok(result.modifier === "entferne"
                 ||result.modifier === "erstelle"
                 ||result.modifier === "erzeuge"
                 ||result.modifier === "markiere");
@@ -67,8 +67,13 @@ suite("Extension Tests", function () {
             'Markiere Zeile 1',
             'Markiere Zeile2',
             'MarkiereZeile3',
-            'MarkiereZeile   Superbogen4',
-            'Markiere     Zeile   Superbogen5',
+            'MarkiereZeile   4',
+            'Markiere     Zeile   5',
+            'Entferne Zeile 1',
+            'Entferne Zeile2',
+            'EntferneZeile3',
+            'EntferneZeile   4',
+            'Entferne     Zeile   5',
         ];
 
         commands.forEach((command) => {

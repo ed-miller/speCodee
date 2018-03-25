@@ -17,6 +17,7 @@ function editText(pos:vscode.Position, text:string) {
 }
 
 function createClass(name:string) {
+    if(!vscode.window.activeTextEditor) return;
     let doc = vscode.window.activeTextEditor.document;
     const fullText = doc.getText()
     let pos = doc.positionAt(fullText.length - 1);
@@ -24,6 +25,7 @@ function createClass(name:string) {
 }
 
 function createMethod(name:string) {
+    if(!vscode.window.activeTextEditor) return;
     let doc = vscode.window.activeTextEditor.document;
     const fullText = doc.getText()
 
@@ -37,6 +39,7 @@ function createMethod(name:string) {
 }
 
 function createAttribute(name:string, type:string) {
+    if(!vscode.window.activeTextEditor) return;
     let doc = vscode.window.activeTextEditor.document;
     const fullText = doc.getText();
 
@@ -50,11 +53,22 @@ function createAttribute(name:string, type:string) {
 
 function codeeGotoLine(line:number) {
     const editor = vscode.window.activeTextEditor;
+    if (!editor) return;
     const position = editor.selection.active;
 
     var newPosition = position.with(line > 0 ? line-1 : 0, 0);
     var newSelection = new vscode.Selection(newPosition, newPosition);
     editor.selection = newSelection;
+}
+
+function codeeDeleteLine(line:number) {
+    //@Todo delete line
+    // const editor = vscode.window.activeTextEditor;
+    // const position = editor.selection.active;
+    //
+    // var newPosition = position.with(line > 0 ? line-1 : 0, 0);
+    // var newSelection = new vscode.Selection(newPosition, newPosition);
+    // editor.selection = newSelection;
 }
 
 function codeeMarkLine(line:number) {
@@ -105,7 +119,7 @@ function processCommand(command:string) {
 /*
  *
  **/
-export function tranformClass(command:string) {
+export function tranformReservedWord(command:string) {
     let inputString = command.toLocaleLowerCase();
     let attributeMatch = /(vom[\s\S]*typ)[\s\S]*(string|nummer)/gmi.exec(inputString);
 
@@ -123,7 +137,7 @@ export function tranformClass(command:string) {
         console.log('inputString', inputString)
     }
 
-    let match = /(lösche|erstelle|erzeuge|markiere)[\s\S]*(klasse|methode|attribut|Zeile)[\s]*([\S]*)/gim.exec(inputString)
+    let match = /(entferne|erstelle|erzeuge)[\s\S]*(klasse|methode|attribut)[\s]*([\S]*)/gim.exec(inputString)
     console.log('match', match)
     const modifier:string = (match && match.length >= 1) ? match[1].trim() : null;
     const reservedWord:string = (match && match.length >= 2) ? match[2].trim() : null;
@@ -142,9 +156,9 @@ export function tranformClass(command:string) {
     // transformResult
     result.reservedWord === 'klasse' && result.modifier === 'erstelle'
         && createClass(result.name);
-    result.reservedWord === 'method' && result.modifier === 'erstelle'
+    result.reservedWord === 'methode' && result.modifier === 'erstelle'
         && createMethod(result.name);
-    result.reservedWord === 'attribute' && result.modifier === 'erstelle'
+    result.reservedWord === 'attribut' && result.modifier === 'erstelle'
         && result.type !== null
         && createAttribute(result.name, result.type);
     return result
@@ -152,7 +166,7 @@ export function tranformClass(command:string) {
 
 export function tranformMark(command:string) {
     let inputString = command.toLocaleLowerCase();
-    let match = /(markiere)[\s\S]*(zeile)[\s]*([\d]*)/gim.exec(inputString)
+    let match = /(markiere|entferne|gehe[\s]*zu)[\s\S]*(zeile)[\s]*([\d]*)/gim.exec(inputString)
     console.log('match', match)
     const modifier:string = (match && match.length >= 1) ? match[1].trim() : null;
     const reservedWord:string = (match && match.length >= 2) ? match[2].trim() : null;
@@ -167,8 +181,13 @@ export function tranformMark(command:string) {
     // transformResult
     result.modifier === 'markiere'  && result.reservedWord === 'zeile'
         && codeeMarkLine(line);
+    result.modifier === 'gehe zu'  && result.reservedWord === 'zeile'
+        && codeeGotoLine(line);
+    result.modifier === 'entferne'  && result.reservedWord === 'zeile'
+        && codeeDeleteLine(line);
     return result
 }
+
 
 
 // this method is called when your extension is activated
