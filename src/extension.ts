@@ -58,6 +58,7 @@ function codeeGotoLine(line:number) {
 
 function codeeMarkLine(line:number) {
     const editor = vscode.window.activeTextEditor;
+    if (!editor) return;
     const position = editor.selection.active;
 
     var newPosition = position.with(line > 0 ? line-1 : 0, 0);
@@ -88,17 +89,17 @@ export function tranformClass(command:string) {
     const of:string = (attributeMatch && attributeMatch.length >= 2)
         ? attributeMatch[1].trim() : null;
     const ofIndex:number = (attributeMatch && attributeMatch.length >= 2)
-        ? attributeMatch[1].indexOf('vom') : null;
+        ? inputString.indexOf('vom') : null;
     const typeString:string = (attributeMatch && attributeMatch.length >= 2)
         ? attributeMatch[1].trim() : null;
     const type:string = (attributeMatch && attributeMatch.length >= 3)
         ? attributeMatch[2].trim() : null;
 
-    if (of.indexOf('vom') > -1){
-        inputString = inputString.substring(0, ofIndex);
+    if (of && of.indexOf('vom') > -1){
+        inputString = (inputString) ? inputString.substring(0, ofIndex) : '';
+        console.log('inputString', inputString)
     }
 
-    //    (vom|[\s]*)[\s\S]*(typ|[\s]*)[\s\S]*(string|nummer|[\s]*)
     let match = /(lösche|erstelle|erzeuge|markiere)[\s\S]*(klasse|methode|attribut|Zeile)[\s]*([\S]*)/gim.exec(inputString)
     console.log('match', match)
     const modifier:string = (match && match.length >= 1) ? match[1].trim() : null;
@@ -113,10 +114,7 @@ export function tranformClass(command:string) {
         type
     }
 
-    if (result.type !== null && result.of !== null) {
-        result.name = result.name.replace('vom', '')
-        result.name = result.name.replace('typ', '')
-    }
+
     // transformResult
     result.reservedWord === 'class' && result.modifier === 'erstelle'
         && createClass(result.name);
@@ -125,6 +123,26 @@ export function tranformClass(command:string) {
     result.reservedWord === 'attribute' && result.modifier === 'erstelle'
         && result.type !== null
         && createAttribute(result.name, result.type);
+    return result
+}
+
+export function tranformMark(command:string) {
+    let inputString = command.toLocaleLowerCase();
+    let match = /(markiere)[\s\S]*(zeile)[\s]*([\d]*)/gim.exec(inputString)
+    console.log('match', match)
+    const modifier:string = (match && match.length >= 1) ? match[1].trim() : null;
+    const reservedWord:string = (match && match.length >= 2) ? match[2].trim() : null;
+    const line:number = (match && match.length >= 3) ? +match[3].trim() : null;
+    let result = {
+        modifier,
+        reservedWord,
+        line
+    }
+
+
+    // transformResult
+    result.modifier === 'markiere'  && result.reservedWord === 'zeile'
+        && codeeMarkLine(line);
     return result
 }
 
