@@ -1,5 +1,5 @@
 
-![speCodee Icon](https://raw.githubusercontent.com/ed-miller/speCodee/master/images/speCodee_icon.png)
+![speCodee Icon](https://raw.githubusercontent.com/ed-miller/speCodee/master/images/speCodee_icon1.png)
 
 
 ###Inspiration
