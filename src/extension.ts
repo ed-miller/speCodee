@@ -82,16 +82,21 @@ function processCommand(command:string) {
  *
  **/
 export function tranformClass(command:string) {
-    const inputString = command.toLocaleLowerCase();
+    let inputString = command.toLocaleLowerCase();
     let attributeMatch = /(vom[\s\S]*typ)[\s\S]*(string|nummer)/gmi.exec(inputString);
 
     const of:string = (attributeMatch && attributeMatch.length >= 2)
         ? attributeMatch[1].trim() : null;
+    const ofIndex:number = (attributeMatch && attributeMatch.length >= 2)
+        ? attributeMatch[1].indexOf('vom') : null;
     const typeString:string = (attributeMatch && attributeMatch.length >= 2)
         ? attributeMatch[1].trim() : null;
     const type:string = (attributeMatch && attributeMatch.length >= 3)
         ? attributeMatch[2].trim() : null;
 
+    if (of.indexOf('vom') > -1){
+        inputString = inputString.substring(0, ofIndex);
+    }
 
     //    (vom|[\s]*)[\s\S]*(typ|[\s]*)[\s\S]*(string|nummer|[\s]*)
     let match = /(lösche|erstelle|erzeuge|markiere)[\s\S]*(klasse|methode|attribut|Zeile)[\s]*([\S]*)/gim.exec(inputString)
