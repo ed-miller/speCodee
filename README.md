@@ -1,4 +1,7 @@
+
 ![speCodee Icon](https://raw.githubusercontent.com/ed-miller/speCodee/master/images/speCodee_icon.png)
+
+
 ###Inspiration
 Writing code is an exhaustive process. You have to think about your idee, read documentation and type your code carefully line by line. Wouldn't it be easier if you could just ponder about you idea and simply say what you want to create? That's our vision! Creating software by talking to a computer which transfers your meta model to actual program language code.
 
