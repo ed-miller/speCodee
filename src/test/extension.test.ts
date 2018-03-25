@@ -5,7 +5,7 @@
 
 // The module 'assert' provides assertion methods from node
 import * as assert from 'assert';
-import {tranformClass} from "../extension";
+import {tranformClass, tranformMark} from "../extension";
 
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
@@ -42,7 +42,7 @@ suite("Extension Tests", function () {
         ];
         commands.forEach((command) => {
             const result = tranformClass(command);
-            console.log('result', result);
+            console.log('input: ' + command + ' - result', result);
 
             assert.ok(result.modifier === "lösche"
                 ||result.modifier === "erstelle"
@@ -58,6 +58,24 @@ suite("Extension Tests", function () {
             if (result.of === 'vom' && result.typeString === 'typ'){
                 assert.ok((result.type === "string" || result.type === "nummer"));
             }
+        })
+
+    });
+
+    test("transform an input to mark row", function() {
+        let commands = [
+            'Markiere Zeile 1',
+            'Markiere Zeile2',
+            'MarkiereZeile3',
+            'MarkiereZeile   Superbogen4',
+            'Markiere     Zeile   Superbogen5',
+        ];
+
+        commands.forEach((command) => {
+            const result = tranformMark(command);
+            console.log('input: ' + command + ' - result', result);
+
+            assert.ok(result.line >= 0);
         })
 
     });
