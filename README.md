@@ -25,6 +25,8 @@ Speech recognition have to be improved and make more reliable. The meta model tr
 
 ### Built With
 * alexa-speech-recognition-api
+* Cortana Speech Recognition API
+* Google Cloud Speech API
 * javascript
 * node.js
 * webpack
