@@ -82,16 +82,7 @@ function codeeMarkLine(line:number) {
     editor.selection = newSelection;
 }
 
-function codeeDeleteLine(line:number) {
-    const editor = vscode.window.activeTextEditor;
-    const position = editor.selection.active;
 
-    var newPosition = position.with(line > 0 ? line-1 : 0, 0);
-    var newPosition2 = position.with(line, 0);
-    var newSelection = new vscode.Selection(newPosition, newPosition2);
-    editor.selection = newSelection;
-    
-}
 
 /*
 Erzeuge Klasse  Haus
@@ -102,6 +93,9 @@ Gehe zur zeile 77
 */
 
 function processCommand(command:string) {
+    if (command.length < 2)
+        return;
+
     command = command.replace(/[\s]{2,}/g, ' ');
     console.log('processCommand:', command);
     // let posClassKeyWord = command.indexOf('Klasse');
@@ -113,7 +107,7 @@ function processCommand(command:string) {
 
     vscode.window.showInformationMessage('Befehl erhalten: '+command);
 
-    tranformClass(command);
+    tranformReservedWord(command);
 }
 
 /*
