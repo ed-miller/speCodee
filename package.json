@@ -11,7 +11,7 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.sayHello",
+        "onCommand:extension.enableSpeechRecognition",
         "onCommand:extension.createMethod",
         "onCommand:extension.codeeCreateAttribute2"
     ],
@@ -19,7 +19,7 @@
     "contributes": {
         "commands": [
             {
-                "command": "extension.sayHello",
+                "command": "extension.enableSpeechRecognition",
                 "title": "Codee - Speech assistant"
             },
             {

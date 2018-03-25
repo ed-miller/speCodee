@@ -72,6 +72,7 @@ function codeeGotoLine(line:number) {
 }
 
 function codeeMarkLine(line:number) {
+    console.log('codeeMarkLine',line);
     const editor = vscode.window.activeTextEditor;
     if (!editor) return;
     const position = editor.selection.active;
@@ -87,12 +88,6 @@ function codeeConsoleOutput(printText:string) {
     const editor = vscode.window.activeTextEditor;
     if (!editor) return;
     const position = editor.selection.active;
-
-    var newPosition = position.with(line > 0 ? line-1 : 0, 0);
-    var newPosition2 = position.with(line, 0);
-    var newSelection = new vscode.Selection(newPosition, newPosition2);
-    editor.selection = newSelection;
-
     editText(position, 'console.log("'+printText+'");\r\n');
 }
 
@@ -113,6 +108,17 @@ function processCommand(command:string) {
     vscode.window.showInformationMessage('Befehl erhalten: '+command);
 
     tranformReservedWord(command);
+    tranformMark(command);
+    
+    // transformStatement
+    let ofs = command.indexOf("usgabe");
+    console.log('ofs', ofs);
+    if (ofs >= 0) {
+        let text = command.substring(ofs + 7);
+    console.log('processCommand class', text);
+        codeeConsoleOutput(text);
+    }
+
 }
 
 /*
@@ -188,8 +194,8 @@ export function tranformMark(command:string) {
         && codeeGotoLine(line);
     result.modifier === 'entferne'  && result.reservedWord === 'zeile'
         && codeeDeleteLine(line);
-    // result.modifier === 'ausgabe'  && result.reservedWord === 'zeile'
-    //     && co(line);
+    result.modifier === 'ausgabe'  && result.reservedWord === 'zeile'
+        && codeeConsoleOutput(line);
 
     console.log('inputString: ' + command + ' - match '+ match + ' - result', result);
     return result
@@ -209,7 +215,7 @@ export function activate(context: vscode.ExtensionContext) {
     // The command has been defined in the package.json file
     // Now provide the implementation of the command with  registerCommand
     // The commandId parameter must match the command field in package.json
-    let disposable = vscode.commands.registerCommand('extension.sayHello', () => {
+    let disposable = vscode.commands.registerCommand('extension.enableSpeechRecognition', () => {
         // The code you place here will be executed every time your command is executed
 
         // Display a message box to the user
@@ -217,6 +223,7 @@ export function activate(context: vscode.ExtensionContext) {
         
         // createMethod('Farbwechsel');
         // createClass('Regenbogen');
+        // processCommand('Gehe zu zeile 18');
     });
 
     
