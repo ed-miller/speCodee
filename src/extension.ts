@@ -21,7 +21,7 @@ function createClass(name:string) {
     let doc = vscode.window.activeTextEditor.document;
     const fullText = doc.getText()
     let pos = doc.positionAt(fullText.length - 1);
-    editText(pos, "\r\nclass "+name+"\r\n"+"{\r\n\r\n\r\n\r\n\r\n\r\n}\r\n\r\n");
+    editText(pos, "\r\nclass "+name+"\r\n"+"{\r\n\tconstructor(){\r\n\r\n\r\n\t}\r\n\r\n\r\n\r\n}\r\n\r\n");
 }
 
 function createMethod(name:string) {
@@ -47,7 +47,7 @@ function createAttribute(name:string, type:string) {
 
     if (posClassBegin > 0) { 
         let pos = doc.positionAt(posClassBegin +1);
-        editText(pos,  "\r\n\tprivate "+name+":"+type+"\r\n");
+        editText(pos,  "\r\n\tprivate "+name+":"+type+";\r\n");
     }
 }
 
@@ -83,12 +83,23 @@ function codeeMarkLine(line:number) {
 }
 
 
+function codeeConsoleOutput(printText:string) {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) return;
+    const position = editor.selection.active;
+
+    var newPosition = position.with(line > 0 ? line-1 : 0, 0);
+    var newPosition2 = position.with(line, 0);
+    var newSelection = new vscode.Selection(newPosition, newPosition2);
+    editor.selection = newSelection;
+
+    editText(position, 'console.log("'+printText+'");\r\n');
+}
+
+
 
 /*
-Erzeuge Klasse  Haus
-Erstelle Methode Zünden
-Erstelle Attribut Zylinderfassung
-Gehe zur zeile 77
+
 
 */
 
@@ -148,13 +159,15 @@ export function tranformReservedWord(command:string) {
 
     console.log('result',result);
     // transformResult
-    result.reservedWord === 'klasse' && result.modifier === 'erstelle'
+    result.reservedWord === 'klasse' && (result.modifier === 'erstelle' ||  result.modifier === 'stelle')
         && createClass(result.name);
-    result.reservedWord === 'methode' && result.modifier === 'erstelle'
+    result.reservedWord === 'methode' && (result.modifier === 'erstelle' ||  result.modifier === 'stelle')
         && createMethod(result.name);
+        result.reservedWord === 'attribut' && (result.modifier === 'erstelle' ||  result.modifier === 'stelle')
+            && result.type !== null
+            && createAttribute(result.name, result.type);
     result.reservedWord === 'attribut' && result.modifier === 'erstelle'
-        && result.type !== null
-        && createAttribute(result.name, result.type);
+            && createAttribute(result.name, 'any');
 
     console.log('inputString: ' + command + ' - match '+ match + ' - result', result);
     return result
@@ -251,8 +264,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 
 
-    const subprocess = procRunner.execFileSync('Speech.exe');
-    console.log('process:',subprocess);
+    // const subprocess = procRunner.execFileSync('Speech.exe');
+    // console.log('process:',subprocess);
 
     
 }
