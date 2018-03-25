@@ -51,16 +51,6 @@ function createAttribute(name:string, type:string) {
     }
 }
 
-function codeeGotoLine(line:number) {
-    const editor = vscode.window.activeTextEditor;
-    if (!editor) return;
-    const position = editor.selection.active;
-
-    var newPosition = position.with(line > 0 ? line-1 : 0, 0);
-    var newSelection = new vscode.Selection(newPosition, newPosition);
-    editor.selection = newSelection;
-}
-
 function codeeDeleteLine(line:number) {
     //@Todo delete line
     // const editor = vscode.window.activeTextEditor;
@@ -69,6 +59,16 @@ function codeeDeleteLine(line:number) {
     // var newPosition = position.with(line > 0 ? line-1 : 0, 0);
     // var newSelection = new vscode.Selection(newPosition, newPosition);
     // editor.selection = newSelection;
+}
+
+function codeeGotoLine(line:number) {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) return;
+    const position = editor.selection.active;
+
+    var newPosition = position.with(line > 0 ? line-1 : 0, 0);
+    var newSelection = new vscode.Selection(newPosition, newPosition);
+    editor.selection = newSelection;
 }
 
 function codeeMarkLine(line:number) {
@@ -91,12 +91,6 @@ function codeeConsoleOutput(printText:string) {
     editText(position, 'console.log("'+printText+'");\r\n');
 }
 
-
-
-/*
-
-
-*/
 
 function processCommand(command:string) {
     if (command.length < 2)
@@ -148,7 +142,7 @@ export function tranformReservedWord(command:string) {
         console.log('inputString', inputString)
     }
 
-    let match = /(entferne|erstelle|erzeuge)[\s\S]*(klasse|methode|attribut)[\s]*([\S]*)/gim.exec(inputString)
+    let match = /(entferne|erstelle|stelle|erzeuge|zeuge)[\s\S]*(klasse|methode|method|attribut|attribute)[\s]*([\S]{3,})/gim.exec(inputString)
     console.log('match', match)
     const modifier:string = (match && match.length >= 1) ? match[1].trim() : null;
     const reservedWord:string = (match && match.length >= 2) ? match[2].trim() : null;
@@ -165,15 +159,15 @@ export function tranformReservedWord(command:string) {
 
     console.log('result',result);
     // transformResult
-    result.reservedWord === 'klasse' && (result.modifier === 'erstelle' ||  result.modifier === 'stelle')
+    result.reservedWord === 'klasse'
+        && (result.modifier === 'erstelle' || result.modifier === 'stelle')
         && createClass(result.name);
-    result.reservedWord === 'methode' && (result.modifier === 'erstelle' ||  result.modifier === 'stelle')
+    (result.reservedWord === 'methode' || result.reservedWord === 'method')
+        && (result.modifier === 'erstelle' || result.modifier === 'stelle')
         && createMethod(result.name);
-        result.reservedWord === 'attribut' && (result.modifier === 'erstelle' ||  result.modifier === 'stelle')
-            && result.type !== null
-            && createAttribute(result.name, result.type);
-    result.reservedWord === 'attribut' && result.modifier === 'erstelle'
-            && createAttribute(result.name, 'any');
+    (result.reservedWord === 'attribut' || result.reservedWord === 'attribute')&& (result.modifier === 'erstelle'|| result.modifier === 'stelle')
+        && result.type !== null
+        && createAttribute(result.name, /*result.type*/ 'any');
 
     console.log('inputString: ' + command + ' - match '+ match + ' - result', result);
     return result
