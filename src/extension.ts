@@ -194,8 +194,8 @@ export function tranformMark(command:string) {
         && codeeGotoLine(line);
     result.modifier === 'entferne'  && result.reservedWord === 'zeile'
         && codeeDeleteLine(line);
-    result.modifier === 'ausgabe'  && result.reservedWord === 'zeile'
-        && codeeConsoleOutput(line);
+    // result.modifier === 'ausgabe'  && result.reservedWord === 'zeile'
+    //     && codeeConsoleOutput(line);
 
     console.log('inputString: ' + command + ' - match '+ match + ' - result', result);
     return result
@@ -223,7 +223,8 @@ export function activate(context: vscode.ExtensionContext) {
         
         // createMethod('Farbwechsel');
         // createClass('Regenbogen');
-        // processCommand('Gehe zu zeile 18');
+        processCommand('Markiere zeile 17');
+        processCommand('Konsolenausgaben Hallo ich bin ein Test.');
     });
 
     

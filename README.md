@@ -29,3 +29,7 @@ Speech recognition have to be improved and make more reliable. The meta model tr
 * typescript
 * visual-studio-code
 * visual-studio-code-extension
+
+Important Note: This is a prototype which was developed for Windows. Despite that Visual Studio Code Extension are cross plattform, this one is only for Windows OS. Moreover our prototype support only German commands.
+
+Testing: To start speech recognition you have to start the process Speech.exe. Afterwards you can start writing your code with your speech.
