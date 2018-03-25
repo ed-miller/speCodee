@@ -90,12 +90,16 @@ Gehe zur zeile 77
 function processCommand(command:string) {
     command = command.replace(/[\s]{2,}/g, ' ');
     console.log('processCommand:', command);
-    let posClassKeyWord = command.indexOf('Klasse');
-    if (posClassKeyWord > 0) {
-        let name = command.substring(posClassKeyWord + 7);
-        console.log('processCommand class', name.split(' ')[0], name);
-        createClass(name.split(' ')[0]);
-    }
+    // let posClassKeyWord = command.indexOf('Klasse');
+    // if (posClassKeyWord > 0) {
+    //     let name = command.substring(posClassKeyWord + 7);
+    //     console.log('processCommand class', name.split(' ')[0], name);
+    //     createClass(name.split(' ')[0]);
+    // }
+
+    vscode.window.showInformationMessage('Befehl erhalten: '+command);
+
+    tranformClass(command);
 }
 
 /*
@@ -134,8 +138,9 @@ export function tranformClass(command:string) {
     }
 
 
+    console.log('result',result);
     // transformResult
-    result.reservedWord === 'class' && result.modifier === 'erstelle'
+    result.reservedWord === 'klasse' && result.modifier === 'erstelle'
         && createClass(result.name);
     result.reservedWord === 'method' && result.modifier === 'erstelle'
         && createMethod(result.name);
