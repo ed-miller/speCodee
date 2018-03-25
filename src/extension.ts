@@ -21,7 +21,7 @@ function createClass(name:string) {
     let doc = vscode.window.activeTextEditor.document;
     const fullText = doc.getText()
     let pos = doc.positionAt(fullText.length - 1);
-    editText(pos, "\r\nclass "+name+"\r\n"+"{\r\n\r\n\r\n\r\n\r\n\r\n}\r\n\r\n");
+    editText(pos, "\r\nclass "+name+"\r\n"+"{\r\n\tconstructor(){\r\n\r\n\r\n\t}\r\n\r\n\r\n\r\n}\r\n\r\n");
 }
 
 function createMethod(name:string) {
@@ -47,8 +47,18 @@ function createAttribute(name:string, type:string) {
 
     if (posClassBegin > 0) { 
         let pos = doc.positionAt(posClassBegin +1);
-        editText(pos,  "\r\n\tprivate "+name+":"+type+"\r\n");
+        editText(pos,  "\r\n\tprivate "+name+":"+type+";\r\n");
     }
+}
+
+function codeeDeleteLine(line:number) {
+    //@Todo delete line
+    // const editor = vscode.window.activeTextEditor;
+    // const position = editor.selection.active;
+    //
+    // var newPosition = position.with(line > 0 ? line-1 : 0, 0);
+    // var newSelection = new vscode.Selection(newPosition, newPosition);
+    // editor.selection = newSelection;
 }
 
 function codeeGotoLine(line:number) {
@@ -72,7 +82,8 @@ function codeeMarkLine(line:number) {
     editor.selection = newSelection;
 }
 
-function codeeDeleteLine(line:number) {
+
+function codeeConsoleOutput(printText:string) {
     const editor = vscode.window.activeTextEditor;
     if (!editor) return;
     const position = editor.selection.active;
@@ -81,18 +92,15 @@ function codeeDeleteLine(line:number) {
     var newPosition2 = position.with(line, 0);
     var newSelection = new vscode.Selection(newPosition, newPosition2);
     editor.selection = newSelection;
-    
+
+    editText(position, 'console.log("'+printText+'");\r\n');
 }
 
-/*
-Erzeuge Klasse  Haus
-Erstelle Methode Zünden
-Erstelle Attribut Zylinderfassung
-Gehe zur zeile 77
-
-*/
 
 function processCommand(command:string) {
+    if (command.length < 2)
+        return;
+
     command = command.replace(/[\s]{2,}/g, ' ');
     console.log('processCommand:', command);
     // let posClassKeyWord = command.indexOf('Klasse');
@@ -151,10 +159,9 @@ export function tranformReservedWord(command:string) {
     (result.reservedWord === 'methode' || result.reservedWord === 'method')
         && (result.modifier === 'erstelle' || result.modifier === 'stelle')
         && createMethod(result.name);
-    (result.reservedWord === 'attribut' || result.reservedWord === 'attribute')
-        && (result.modifier === 'erstelle' || result.modifier === 'stelle')
+    (result.reservedWord === 'attribut' || result.reservedWord === 'attribute')&& (result.modifier === 'erstelle'|| result.modifier === 'stelle')
         && result.type !== null
-        && createAttribute(result.name, result.type);
+        && createAttribute(result.name, /*result.type*/ 'any');
 
     console.log('inputString: ' + command + ' - match '+ match + ' - result', result);
     return result
@@ -172,6 +179,7 @@ export function tranformMark(command:string) {
         reservedWord,
         line
     }
+
 
     // transformResult
     result.modifier === 'markiere'  && result.reservedWord === 'zeile'
@@ -250,8 +258,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 
 
-    const subprocess = procRunner.execFileSync('Speech.exe');
-    console.log('process:',subprocess);
+    // const subprocess = procRunner.execFileSync('Speech.exe');
+    // console.log('process:',subprocess);
 
     
 }
