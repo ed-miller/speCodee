@@ -5,6 +5,7 @@ import * as vscode from 'vscode';
 import WebSocket = require('ws');
 import fs = require('fs');
 import { watchFile } from 'fs';
+import procRunner = require('child_process');
 
 const authToken:string = "sdasdasdasdasdasdas";
 
@@ -81,16 +82,38 @@ function codeeMarkLine(line:number) {
     editor.selection = newSelection;
 }
 
+function codeeDeleteLine(line:number) {
+    const editor = vscode.window.activeTextEditor;
+    const position = editor.selection.active;
+
+    var newPosition = position.with(line > 0 ? line-1 : 0, 0);
+    var newPosition2 = position.with(line, 0);
+    var newSelection = new vscode.Selection(newPosition, newPosition2);
+    editor.selection = newSelection;
+    
+}
+
+/*
+Erzeuge Klasse  Haus
+Erstelle Methode Zünden
+Erstelle Attribut Zylinderfassung
+Gehe zur zeile 77
+
+*/
 
 function processCommand(command:string) {
     command = command.replace(/[\s]{2,}/g, ' ');
     console.log('processCommand:', command);
-    let posClassKeyWord = command.indexOf('Klasse');
-    if (posClassKeyWord > 0) {
-        let name = command.substring(posClassKeyWord + 7);
-        console.log('processCommand class', name.split(' ')[0], name);
-        createClass(name.split(' ')[0]);
-    }
+    // let posClassKeyWord = command.indexOf('Klasse');
+    // if (posClassKeyWord > 0) {
+    //     let name = command.substring(posClassKeyWord + 7);
+    //     console.log('processCommand class', name.split(' ')[0], name);
+    //     createClass(name.split(' ')[0]);
+    // }
+
+    vscode.window.showInformationMessage('Befehl erhalten: '+command);
+
+    tranformClass(command);
 }
 
 /*
@@ -129,6 +152,7 @@ export function tranformReservedWord(command:string) {
     }
 
 
+    console.log('result',result);
     // transformResult
     result.reservedWord === 'klasse' && result.modifier === 'erstelle'
         && createClass(result.name);
@@ -179,7 +203,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
-    console.log('Congratulations, your extension "specody" is now active!');
+    console.log('Congratulations, your extension "specodee" is now active!');
 
     // The command has been defined in the package.json file
     // Now provide the implementation of the command with  registerCommand
@@ -229,7 +253,13 @@ export function activate(context: vscode.ExtensionContext) {
         speech.split("\r\n").forEach(element => {
             processCommand(element);
         });
-    })
+    });
+
+
+
+    const subprocess = procRunner.execFileSync('Speech.exe');
+    console.log('process:',subprocess);
+
     
 }
 
