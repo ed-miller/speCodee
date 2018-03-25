@@ -67,6 +67,17 @@ function codeeMarkLine(line:number) {
     editor.selection = newSelection;
 }
 
+function codeeDeleteLine(line:number) {
+    const editor = vscode.window.activeTextEditor;
+    const position = editor.selection.active;
+
+    var newPosition = position.with(line > 0 ? line-1 : 0, 0);
+    var newPosition2 = position.with(line, 0);
+    var newSelection = new vscode.Selection(newPosition, newPosition2);
+    editor.selection = newSelection;
+    
+}
+
 /*
 Erzeuge Klasse  Haus
 Erstelle Methode Zünden
