@@ -155,12 +155,14 @@ export function tranformReservedWord(command:string) {
     result.reservedWord === 'attribut' && result.modifier === 'erstelle'
         && result.type !== null
         && createAttribute(result.name, result.type);
+
+    console.log('inputString: ' + command + ' - match '+ match + ' - result', result);
     return result
 }
 
 export function tranformMark(command:string) {
     let inputString = command.toLocaleLowerCase();
-    let match = /(markiere|entferne|gehe[\s]*zu)[\s\S]*(zeile)[\s]*([\d]*)/gim.exec(inputString)
+    let match = /(markiere|entferne|ausgabe|gehe[\s]*zu)[\s\S]*(zeile)[\s]*([\d]*)/gim.exec(inputString)
     console.log('match', match)
     const modifier:string = (match && match.length >= 1) ? match[1].trim() : null;
     const reservedWord:string = (match && match.length >= 2) ? match[2].trim() : null;
@@ -179,8 +181,13 @@ export function tranformMark(command:string) {
         && codeeGotoLine(line);
     result.modifier === 'entferne'  && result.reservedWord === 'zeile'
         && codeeDeleteLine(line);
+    // result.modifier === 'ausgabe'  && result.reservedWord === 'zeile'
+    //     && co(line);
+
+    console.log('inputString: ' + command + ' - match '+ match + ' - result', result);
     return result
 }
+
 
 
 

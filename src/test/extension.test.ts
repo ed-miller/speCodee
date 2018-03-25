@@ -42,12 +42,10 @@ suite("Extension Tests", function () {
         ];
         commands.forEach((command) => {
             const result = tranformReservedWord(command);
-            console.log('input: ' + command + ' - result', result);
 
             assert.ok(result.modifier === "entferne"
                 ||result.modifier === "erstelle"
-                ||result.modifier === "erzeuge"
-                ||result.modifier === "markiere");
+                ||result.modifier === "erzeuge");
 
             assert.ok(result.reservedWord === "klasse"
                 ||result.reservedWord === "methode"
@@ -74,14 +72,22 @@ suite("Extension Tests", function () {
             'EntferneZeile3',
             'EntferneZeile   4',
             'Entferne     Zeile   5',
+            'ausgabe Zeile 1',
+            'ausgabe Zeile2',
+            'ausgabeZeile3',
+            'ausgabeZeile   4',
+            'ausgabe     Zeile   5',
         ];
 
         commands.forEach((command) => {
             const result = tranformMark(command);
-            console.log('input: ' + command + ' - result', result);
-
             assert.ok(result.line >= 0);
+            assert.ok((result.modifier === 'entferne'
+                || result.modifier === 'markiere'
+                || result.modifier === 'gehe zu'
+                || result.modifier === 'ausgabe'));
         })
 
     });
+
 });
