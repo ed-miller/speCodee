@@ -61,16 +61,6 @@ function codeeGotoLine(line:number) {
     editor.selection = newSelection;
 }
 
-function codeeDeleteLine(line:number) {
-    //@Todo delete line
-    // const editor = vscode.window.activeTextEditor;
-    // const position = editor.selection.active;
-    //
-    // var newPosition = position.with(line > 0 ? line-1 : 0, 0);
-    // var newSelection = new vscode.Selection(newPosition, newPosition);
-    // editor.selection = newSelection;
-}
-
 function codeeMarkLine(line:number) {
     const editor = vscode.window.activeTextEditor;
     if (!editor) return;
@@ -84,6 +74,7 @@ function codeeMarkLine(line:number) {
 
 function codeeDeleteLine(line:number) {
     const editor = vscode.window.activeTextEditor;
+    if (!editor) return;
     const position = editor.selection.active;
 
     var newPosition = position.with(line > 0 ? line-1 : 0, 0);
@@ -113,7 +104,7 @@ function processCommand(command:string) {
 
     vscode.window.showInformationMessage('Befehl erhalten: '+command);
 
-    tranformClass(command);
+    tranformReservedWord(command);
 }
 
 /*
@@ -137,7 +128,7 @@ export function tranformReservedWord(command:string) {
         console.log('inputString', inputString)
     }
 
-    let match = /(entferne|erstelle|erzeuge)[\s\S]*(klasse|methode|attribut)[\s]*([\S]*)/gim.exec(inputString)
+    let match = /(entferne|erstelle|stelle|erzeuge|zeuge)[\s\S]*(klasse|methode|method|attribut|attribute)[\s]*([\S]{3,})/gim.exec(inputString)
     console.log('match', match)
     const modifier:string = (match && match.length >= 1) ? match[1].trim() : null;
     const reservedWord:string = (match && match.length >= 2) ? match[2].trim() : null;
@@ -154,11 +145,14 @@ export function tranformReservedWord(command:string) {
 
     console.log('result',result);
     // transformResult
-    result.reservedWord === 'klasse' && result.modifier === 'erstelle'
+    result.reservedWord === 'klasse'
+        && (result.modifier === 'erstelle' || result.modifier === 'stelle')
         && createClass(result.name);
-    result.reservedWord === 'methode' && result.modifier === 'erstelle'
+    (result.reservedWord === 'methode' || result.reservedWord === 'method')
+        && (result.modifier === 'erstelle' || result.modifier === 'stelle')
         && createMethod(result.name);
-    result.reservedWord === 'attribut' && result.modifier === 'erstelle'
+    (result.reservedWord === 'attribut' || result.reservedWord === 'attribute')
+        && (result.modifier === 'erstelle' || result.modifier === 'stelle')
         && result.type !== null
         && createAttribute(result.name, result.type);
 
@@ -178,7 +172,6 @@ export function tranformMark(command:string) {
         reservedWord,
         line
     }
-
 
     // transformResult
     result.modifier === 'markiere'  && result.reservedWord === 'zeile'
